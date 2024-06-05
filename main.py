@@ -1,6 +1,7 @@
 from time import time as timer
 from pygame import *
 from random import choice
+import config
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, width, height):
@@ -60,10 +61,10 @@ win_height = 450
 window = display.set_mode((win_width, win_height))
 display.set_caption("Ping-pong")
 
-rocket_left = Player(30, 225, 3, 15, 50)
-rocket_right = Player(870, 225, 3, 15, 50)
+rocket_left = Player(30, 225, config.player_speed, 15, 50)
+rocket_right = Player(870, 225, config.player_speed, 15, 50)
 
-ball = Ball(450, 225, 4, 4, 18, 18)
+ball = Ball(450, 225, config.ball_speed_x, config.ball_speed_y, 18, 18)
 
 player_left_score = 0
 player_right_score = 0
@@ -116,10 +117,13 @@ while game:
         if score_timer is not None and timer() - score_timer >= score_delay:
             finish = False
             score_timer = None
-            ball.player_speed_x = choice([-4, 4])
-            ball.player_speed_y = choice([-4, 4])
+            ball.player_speed_x = choice([config.ball_speed_x * -1, config.ball_speed_x])
+            ball.player_speed_y = choice([config.ball_speed_y * -1, config.ball_speed_y])
 
         window.fill(BG)
+
+        if player_left_score == config.final_score or player_right_score == config.final_score:
+            finish = True
 
         rocket_left.reset()
         rocket_right.reset()
